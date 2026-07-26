@@ -30,7 +30,7 @@ apt-get install -y python3 python3-pip python3-venv
 
 echo "[4/8] Installing n8n..."
 if ! command -v n8n > /dev/null; then
-    npm install -g n8n
+    npm install -g n8n --omit=dev --no-fund --no-audit || { echo "Retrying n8n install..."; npm cache clean --force; npm install -g n8n --omit=dev --no-fund --no-audit; }
 else
     echo "n8n already installed: $(n8n --version)"
 fi
@@ -90,3 +90,4 @@ echo "------------------------------------------"
 echo "=========================================="
 echo "    Installation Successfully Completed!  "
 echo "=========================================="
+
