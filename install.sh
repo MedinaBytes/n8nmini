@@ -20,12 +20,17 @@ apt-get install -y curl wget git nano tmux sqlite3 zip unzip ca-certificates sof
 echo "[1.5/8] Configuring SSH for remote access..."
 mkdir -p /var/run/sshd
 # Run SSH on port 2222 so it doesn't conflict with Termux's native sshd
-sed -i 's/^#*Port 22/Port 2222/' /etc/ssh/sshd_config
-sed -i 's/^#*PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
-sed -i 's/^#*PermitRootLogin yes/PermitRootLogin yes/' /etc/ssh/sshd_config
+if ! grep -q "^Port 2222" /etc/ssh/sshd_config; then
+    sed -i 's/^#*Port 22.*/Port 2222/' /etc/ssh/sshd_config
+fi
+if ! grep -q "^PermitRootLogin yes" /etc/ssh/sshd_config; then
+    sed -i 's/^#*PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config
+fi
 # Default password for root so the user can login
 echo "root:admin" | chpasswd
-service ssh start || /usr/sbin/sshd
+if ! service ssh status >/dev/null 2>&1; then
+    service ssh start || /usr/sbin/sshd || true
+fi
 echo "SSH configured on port 2222 (Login: root / admin)."
 
 echo "[2/8] Installing Node.js LTS..."

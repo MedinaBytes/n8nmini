@@ -1,4 +1,4 @@
-#!/data/data/com.termux/files/usr/bin/bash
+#!/usr/bin/env bash
 
 set -euo pipefail
 
@@ -6,11 +6,40 @@ echo "=========================================="
 echo "       n8nmini Bootstrap Tool       "
 echo "=========================================="
 
+# Check if we are already inside Ubuntu
+if [ -f /etc/os-release ] && grep -qi "ubuntu" /etc/os-release; then
+    echo "[*] Detected Ubuntu environment. Resuming installation from here..."
+    export DEBIAN_FRONTEND=noninteractive
+    apt-get update -y
+    apt-get install -y git curl wget
+    REPO_URL="https://github.com/MedinaBytes/n8nmini.git"
+    
+    if [ ! -d '/opt/n8nmini/.git' ]; then
+        rm -rf /opt/n8nmini
+        git clone $REPO_URL /opt/n8nmini
+    else
+        cd /opt/n8nmini && git stash || true
+        git pull --rebase
+    fi
+    cd /opt/n8nmini
+    chmod +x install.sh
+    ./install.sh
+    exit 0
+fi
+
 echo "[1/5] Updating Termux packages..."
-pkg update -y
+if [ "$(id -u)" = "0" ]; then
+    apt-get update -y
+else
+    pkg update -y
+fi
 
 echo "[2/5] Installing required Termux packages..."
-pkg install -y proot-distro wget curl git nano
+if [ "$(id -u)" = "0" ]; then
+    apt-get install -y proot-distro wget curl git nano
+else
+    pkg install -y proot-distro wget curl git nano
+fi
 
 echo "[3/5] Checking for Ubuntu installation..."
 UBUNTU_ROOTFS="/data/data/com.termux/files/usr/var/lib/proot-distro/installed-rootfs/ubuntu"
@@ -29,10 +58,12 @@ proot-distro login ubuntu -- bash -c "
 export DEBIAN_FRONTEND=noninteractive
 apt-get update -y
 apt-get install -y git curl wget
-if [ ! -d '/opt/n8nmini' ]; then
+if [ ! -d '/opt/n8nmini/.git' ]; then
+    rm -rf /opt/n8nmini
     git clone \$REPO_URL /opt/n8nmini
 else
-    cd /opt/n8nmini && git pull
+    cd /opt/n8nmini && git stash || true
+    git pull --rebase
 fi
 cd /opt/n8nmini
 chmod +x install.sh
