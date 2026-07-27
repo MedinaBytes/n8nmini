@@ -1,13 +1,13 @@
 #!/bin/bash
-# Stop AIPhoneServer
+# Stop n8nmini
 
-SESSION="AIPhoneServer"
+SESSION="n8nmini"
 
-echo "Stopping AIPhoneServer..."
+echo "Stopping n8nmini..."
 
 if tmux has-session -t $SESSION 2>/dev/null; then
     tmux kill-session -t $SESSION
     echo "Session $SESSION stopped."
 else
-    echo "AIPhoneServer is not running."
+    echo "n8nmini is not running."
 fi

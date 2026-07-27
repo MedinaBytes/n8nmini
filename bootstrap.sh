@@ -3,7 +3,7 @@
 set -euo pipefail
 
 echo "=========================================="
-echo "       AIPhoneServer Bootstrap Tool       "
+echo "       n8nmini Bootstrap Tool       "
 echo "=========================================="
 
 echo "[1/5] Updating Termux packages..."
@@ -22,29 +22,39 @@ else
     echo "Ubuntu is already installed."
 fi
 
-echo "[4/5] Launching install.sh inside Ubuntu..."
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-chmod +x "${SCRIPT_DIR}/install.sh"
+echo "[4/5] Launching setup inside Ubuntu..."
+REPO_URL="https://github.com/MedinaBytes/n8nmini.git"
 
-# Bind the current repository directory to /opt/AIPhoneServer inside the Ubuntu rootfs
-proot-distro login ubuntu --bind "${SCRIPT_DIR}:/opt/AIPhoneServer" -- bash -c "cd /opt/AIPhoneServer && ./install.sh"
+proot-distro login ubuntu -- bash -c "
+export DEBIAN_FRONTEND=noninteractive
+apt-get update -y
+apt-get install -y git curl wget
+if [ ! -d '/opt/n8nmini' ]; then
+    git clone \$REPO_URL /opt/n8nmini
+else
+    cd /opt/n8nmini && git pull
+fi
+cd /opt/n8nmini
+chmod +x install.sh
+./install.sh
+"
 
 echo "[5/5] Setting up Termux wrappers and widgets..."
 
-# Create a wrapper in Termux for the aips command
-cat << EOF > /data/data/com.termux/files/usr/bin/aips
+# Create a wrapper in Termux for the n8nmini command
+cat << 'EOF' > /data/data/com.termux/files/usr/bin/n8nmini
 #!/data/data/com.termux/files/usr/bin/bash
-proot-distro login ubuntu --bind "${SCRIPT_DIR}:/opt/AIPhoneServer" -- bash -c "aips \"\\\$@\""
+proot-distro login ubuntu -- bash -c "/opt/n8nmini/scripts/n8nmini.sh \"\$@\""
 EOF
-chmod +x /data/data/com.termux/files/usr/bin/aips
+chmod +x /data/data/com.termux/files/usr/bin/n8nmini
 
 # Create the Termux:Widget shortcut
 mkdir -p /data/data/com.termux/files/home/.shortcuts
-cat << EOF > /data/data/com.termux/files/home/.shortcuts/Start_AIPS
+cat << 'EOF' > /data/data/com.termux/files/home/.shortcuts/Start_n8nmini
 #!/data/data/com.termux/files/usr/bin/bash
-proot-distro login ubuntu --bind "${SCRIPT_DIR}:/opt/AIPhoneServer" -- bash -c "/opt/AIPhoneServer/scripts/aips.sh start"
+proot-distro login ubuntu -- bash -c "/opt/n8nmini/scripts/n8nmini.sh start"
 EOF
-chmod +x /data/data/com.termux/files/home/.shortcuts/Start_AIPS
+chmod +x /data/data/com.termux/files/home/.shortcuts/Start_n8nmini
 echo "Termux wrapper and widget created successfully."
 
 echo "=========================================="

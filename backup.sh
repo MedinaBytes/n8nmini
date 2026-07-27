@@ -1,10 +1,10 @@
 #!/bin/bash
 # Backup Utility
 
-AIPS_DIR="/opt/AIPhoneServer"
+AIPS_DIR="/opt/n8nmini"
 BACKUP_DIR="$AIPS_DIR/backups"
 DATE=$(date +%Y%m%d_%H%M%S)
-BACKUP_FILE="$BACKUP_DIR/aips_backup_$DATE.zip"
+BACKUP_FILE="$BACKUP_DIR/n8nmini_backup_$DATE.zip"
 
 mkdir -p "$BACKUP_DIR"
 

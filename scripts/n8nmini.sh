@@ -1,7 +1,7 @@
 #!/bin/bash
-# AIPhoneServer CLI (aips)
+# n8nmini CLI (n8nmini)
 
-AIPS_DIR="/opt/AIPhoneServer"
+AIPS_DIR="/opt/n8nmini"
 
 command=$1
 shift
@@ -14,7 +14,7 @@ case "$command" in
         bash "$AIPS_DIR/stop.sh" "$@"
         ;;
     status)
-        tmux ls | grep AIPhoneServer || echo "AIPhoneServer is not running."
+        tmux ls | grep n8nmini || echo "n8nmini is not running."
         ;;
     doctor)
         bash "$AIPS_DIR/doctor.sh" "$@"
@@ -36,7 +36,7 @@ case "$command" in
         echo "Please use bootstrap.sh from Termux to reinstall."
         ;;
     *)
-        echo "Usage: aips {start|stop|status|doctor|logs|backup|restore|update}"
+        echo "Usage: n8nmini {start|stop|status|doctor|logs|backup|restore|update}"
         exit 1
         ;;
 esac

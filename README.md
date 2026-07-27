@@ -1,4 +1,4 @@
-# AIPhoneServer 📱
+# n8nmini 📱
 
 Transform an old Android phone into a lightweight, reliable, 24/7 AI Automation Node.
 
@@ -19,7 +19,7 @@ Heavy AI inference (LLMs, transcription) should be offloaded to OpenAI, Claude, 
 - **FastAPI Brain**: Exposes an API to interact with your AI memory and tasks.
 - **n8n Orchestration**: Runs scheduled workflows and webhooks.
 - **No Heavy Containers**: No Docker, no systemd, no Postgres, no Redis.
-- **One-Command CLI**: Includes the `aips` global command to manage everything seamlessly.
+- **One-Command CLI**: Includes the `n8nmini` global command to manage everything seamlessly.
 
 ---
 
@@ -31,8 +31,8 @@ Just three commands to get a fully working AI orchestration node on your phone!
 2. Open Termux and run:
 ```bash
 pkg update && pkg install git -y
-git clone https://github.com/MedinaBytes/n8nmini.git AIPhoneServer
-cd AIPhoneServer
+git clone https://github.com/MedinaBytes/n8nmini.git n8nmini
+cd n8nmini
 bash bootstrap.sh
 ```
 
@@ -43,25 +43,25 @@ The bootstrap script will automatically:
 
 ---
 
-## 💻 How to Use (`aips` CLI)
+## 💻 How to Use (`n8nmini` CLI)
 
-Once installed, use the `aips` global command from anywhere inside the Ubuntu environment:
+Once installed, use the `n8nmini` global command from anywhere inside the Ubuntu environment:
 
-- `aips start` - Starts FastAPI, n8n, and Cloudflare Tunnel in a tmux session.
-- `aips stop` - Gracefully stops the services.
-- `aips status` - Shows running services and tmux windows.
-- `aips doctor` - Checks for dependencies, available RAM, and configuration issues.
-- `aips logs` - Views logs for the running services.
-- `aips backup` - Backs up your workflows, memory database, and configurations to a compressed archive.
-- `aips restore <file>` - Restores a previously created backup.
-- `aips update` - Pulls the latest repository updates and refreshes dependencies.
+- `n8nmini start` - Starts FastAPI, n8n, and Cloudflare Tunnel in a tmux session.
+- `n8nmini stop` - Gracefully stops the services.
+- `n8nmini status` - Shows running services and tmux windows.
+- `n8nmini doctor` - Checks for dependencies, available RAM, and configuration issues.
+- `n8nmini logs` - Views logs for the running services.
+- `n8nmini backup` - Backs up your workflows, memory database, and configurations to a compressed archive.
+- `n8nmini restore <file>` - Restores a previously created backup.
+- `n8nmini update` - Pulls the latest repository updates and refreshes dependencies.
 
 ---
 
 ## 📂 Project Structure
 
 ```text
-AIPhoneServer/
+n8nmini/
 ├── bootstrap.sh    # Termux environment setup
 ├── install.sh      # Ubuntu environment setup
 ├── start.sh        # Service startup
@@ -76,14 +76,14 @@ AIPhoneServer/
 ├── workflows/      # Exported n8n workflows
 ├── prompts/        # AI System prompts
 ├── logs/           # Service output logs
-└── scripts/        # Internal CLI logic (aips.sh)
+└── scripts/        # Internal CLI logic (n8nmini.sh)
 ```
 
 ---
 
 ## 🚀 Services
 
-When started via `aips start`, AIPhoneServer spins up **3 tmux windows** under the `AIPhoneServer` session to keep RAM usage low:
+When started via `n8nmini start`, n8nmini spins up **3 tmux windows** under the `n8nmini` session to keep RAM usage low:
 1. **FastAPI**: The brain (port `8000`)
 2. **n8n**: The orchestrator (port `5678`)
 3. **Cloudflare Tunnel (Optional)**: Secure internet access

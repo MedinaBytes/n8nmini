@@ -2,7 +2,7 @@ from fastapi import FastAPI, Request
 import sqlite3
 import os
 
-app = FastAPI(title="AIPhoneServer API", version="1.0.0")
+app = FastAPI(title="n8nmini API", version="1.0.0")
 
 DB_PATH = "memory/memory.db"
 
@@ -21,7 +21,7 @@ def startup():
 
 @app.get("/")
 def root():
-    return {"status": "AIPhoneServer is running"}
+    return {"status": "n8nmini is running"}
 
 @app.get("/health")
 def health():

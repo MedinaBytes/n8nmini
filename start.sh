@@ -1,10 +1,10 @@
 #!/bin/bash
-# Start AIPhoneServer services in tmux with Auto-Restart
+# Start n8nmini services in tmux with Auto-Restart
 
-AIPS_DIR="/opt/AIPhoneServer"
-SESSION="AIPhoneServer"
+AIPS_DIR="/opt/n8nmini"
+SESSION="n8nmini"
 
-echo "Starting AIPhoneServer..."
+echo "Starting n8nmini..."
 
 if tmux has-session -t $SESSION 2>/dev/null; then
     echo "Session $SESSION is already running."
@@ -24,4 +24,4 @@ tmux send-keys -t $SESSION:1 "cd $AIPS_DIR && while true; do export NODE_OPTIONS
 tmux new-window -t $SESSION:2 -n "Tunnel"
 tmux send-keys -t $SESSION:2 "echo 'Cloudflare tunnel placeholder'" C-m
 
-echo "AIPhoneServer started in tmux session '$SESSION'."
+echo "n8nmini started in tmux session '$SESSION'."

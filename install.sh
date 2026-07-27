@@ -1,21 +1,32 @@
 #!/bin/bash
 
-# AIPhoneServer - Phase 4
+# n8nmini - Phase 4
 # install.sh
 # Purpose: Installs all dependencies inside the Ubuntu proot-distro environment.
-# It expects to be run in /opt/AIPhoneServer
+# It expects to be run in /opt/n8nmini
 
 set -euo pipefail
 
 echo "=========================================="
-echo "    AIPhoneServer Ubuntu Installer        "
+echo "    n8nmini Ubuntu Installer        "
 echo "=========================================="
 
 echo "[1/8] Updating Ubuntu and installing base utilities..."
 export DEBIAN_FRONTEND=noninteractive
 apt-get update -y
 apt-get upgrade -y
-apt-get install -y curl wget git nano tmux sqlite3 zip unzip ca-certificates software-properties-common build-essential
+apt-get install -y curl wget git nano tmux sqlite3 zip unzip ca-certificates software-properties-common build-essential openssh-server
+
+echo "[1.5/8] Configuring SSH for remote access..."
+mkdir -p /var/run/sshd
+# Run SSH on port 2222 so it doesn't conflict with Termux's native sshd
+sed -i 's/^#*Port 22/Port 2222/' /etc/ssh/sshd_config
+sed -i 's/^#*PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+sed -i 's/^#*PermitRootLogin yes/PermitRootLogin yes/' /etc/ssh/sshd_config
+# Default password for root so the user can login
+echo "root:admin" | chpasswd
+service ssh start || /usr/sbin/sshd
+echo "SSH configured on port 2222 (Login: root / admin)."
 
 echo "[2/8] Installing Node.js LTS..."
 if ! command -v node > /dev/null; then
@@ -36,7 +47,7 @@ else
 fi
 
 echo "[5/8] Setting up Python Environment for FastAPI..."
-cd /opt/AIPhoneServer
+cd /opt/n8nmini
 if [ ! -d "venv" ]; then
     python3 -m venv venv
 fi
@@ -47,12 +58,13 @@ pip install fastapi uvicorn pydantic python-dotenv
 
 echo "[6/8] Generating .env.example..."
 cat << 'EOF' > .env.example
-# AIPhoneServer Environment Variables
+# n8nmini Environment Variables
 
 # n8n Settings
 N8N_PORT=5678
 N8N_PROTOCOL=http
-N8N_HOST=localhost
+N8N_HOST=0.0.0.0
+N8N_LISTEN_ADDRESS=0.0.0.0
 WEBHOOK_URL=http://localhost:5678/
 GENERIC_TIMEZONE=UTC
 
@@ -66,17 +78,17 @@ if [ ! -f .env ]; then
 fi
 
 echo "[7/8] Preparing CLI tool structure..."
-# We generate a placeholder for the aips command which will be fully implemented in Phase 5
-if [ ! -f "scripts/aips.sh" ]; then
-    cat << 'EOF' > scripts/aips.sh
+# We generate a placeholder for the n8nmini command which will be fully implemented in Phase 5
+if [ ! -f "scripts/n8nmini.sh" ]; then
+    cat << 'EOF' > scripts/n8nmini.sh
 #!/bin/bash
-echo "aips CLI not fully implemented yet. Run Phase 5."
+echo "n8nmini CLI not fully implemented yet. Run Phase 5."
 EOF
-    chmod +x scripts/aips.sh
+    chmod +x scripts/n8nmini.sh
 fi
 
 # Symlink it so it's available globally in Ubuntu
-ln -sf /opt/AIPhoneServer/scripts/aips.sh /usr/local/bin/aips
+ln -sf /opt/n8nmini/scripts/n8nmini.sh /usr/local/bin/n8nmini
 
 echo "[8/8] Verifying Installation..."
 echo "------------------------------------------"

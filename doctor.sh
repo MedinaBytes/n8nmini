@@ -1,7 +1,7 @@
 #!/bin/bash
 # System Diagnostic Tool
 
-echo "=== AIPhoneServer Doctor ==="
+echo "=== n8nmini Doctor ==="
 echo "Checking dependencies..."
 for cmd in node npm python3 n8n sqlite3 tmux; do
     if command -v $cmd >/dev/null 2>&1; then
